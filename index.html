@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>沖縄 — Family Trip 2026</title>
+<title>沖縄 — 第6希望プラン（晴れ／雨）</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -17,7 +17,10 @@
   --blue:#0071e3;
   --blue-d:#0058b3;
   --fs-scale:1;
+  --weather:#d9650f;
+  --weather-bg:rgba(217,101,15,.08);
 }
+html[data-weather="rain"]{ --weather:#0071e3; --weather-bg:rgba(0,113,227,.08); }
 
 /* ── Accent themes (Apple-style product colors) ── */
 html[data-theme="blue"]{ --blue:#0071e3; }
@@ -50,6 +53,12 @@ html[data-mode="dark"] .map-card:hover{ background:#2c2c2e; }
 html[data-mode="dark"] .status-confirmed{ background:#0e2818; }
 html[data-mode="dark"] .status-check{ background:#2e2210; }
 html[data-mode="dark"] .res-id.copied{ background:#0e2818; color:#34c759; }
+html[data-mode="dark"] .switcher-wrap{ background:rgba(0,0,0,.88); }
+html[data-mode="dark"] .switcher{ background:#2c2c2e; }
+html[data-mode="dark"] .sw-btn.on{ background:#1c1c1e; }
+html[data-mode="dark"] .sw-cmp.on{ background:#2c2c2e; }
+html[data-mode="dark"] .cmp-col.sun{ background:rgba(217,101,15,.1); }
+html[data-mode="dark"] .cmp-col.rain{ background:rgba(0,113,227,.1); }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
 html{scroll-behavior:smooth;}
@@ -83,7 +92,7 @@ a:hover{text-decoration:underline;}
 .nav-links button:hover{opacity:1;}
 .nav-links button.on{opacity:1;font-weight:600;}
 @media(max-width:680px){ .nav-links{gap:16px;} .nav-links button{font-size:11px;} }
-@media(max-width:480px){ .nav-links button:nth-child(n+5){display:none;} }
+@media(max-width:480px){ .nav-links button:nth-child(n+6){display:none;} }
 
 /* ════════ HERO ════════ */
 .hero{
@@ -119,7 +128,7 @@ a:hover{text-decoration:underline;}
 
 /* ════════ PROGRESS PILL (sticky under nav, Apple-style understated) ════════ */
 .progress-wrap{
-  position:sticky;top:48px;z-index:400;
+  position:sticky;top:104px;z-index:400;
   background:rgba(255,255,255,.85);backdrop-filter:blur(14px) saturate(180%);
   border-bottom:1px solid var(--line);
   padding:10px 22px;display:flex;align-items:center;justify-content:center;gap:12px;
@@ -129,6 +138,64 @@ a:hover{text-decoration:underline;}
 }
 .progress-fill{height:100%;background:var(--blue);width:0;transition:width .5s cubic-bezier(.4,0,.2,1);}
 .progress-label{font-size:12px;color:var(--gray-1);font-weight:500;white-space:nowrap;}
+
+/* ════════ WEATHER PLAN SWITCHER ════════ */
+.switcher-wrap{
+  position:sticky;top:48px;z-index:410;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(16px) saturate(180%);
+  border-bottom:1px solid var(--line);
+  padding:10px 22px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.switcher{display:inline-flex;background:var(--gray-bg);border-radius:980px;padding:4px;gap:2px;}
+.sw-btn{
+  padding:7px 18px;border:none;border-radius:980px;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600;color:var(--gray-1);
+  transition:all .25s cubic-bezier(.4,0,.2,1);background:none;
+}
+.sw-btn.on{background:var(--white);color:var(--black);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.sw-btn.on.sun{color:#d9650f;}
+.sw-btn.on.rain{color:#0071e3;}
+.sw-cmp{
+  padding:7px 16px;border:none;border-radius:980px;cursor:pointer;
+  font-family:inherit;font-size:12px;font-weight:500;color:var(--gray-1);background:none;
+}
+.sw-cmp:hover{color:var(--black);}
+.sw-cmp.on{color:var(--black);font-weight:700;background:var(--gray-bg);}
+
+.plan-chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;
+  padding:5px 14px;border-radius:980px;background:var(--weather-bg);color:var(--weather);
+  transition:all .3s;
+}
+
+/* ════════ COMPARE VIEW ════════ */
+.compare-view{display:none;}
+.compare-view.show{display:block;}
+.cmp-day{padding:48px 0;border-top:1px solid var(--line);}
+.cmp-day:first-child{border-top:none;}
+.cmp-day-head{text-align:center;margin-bottom:26px;}
+.cmp-day-head .cdh-num{font-size:13px;font-weight:700;color:var(--gray-1);letter-spacing:1px;text-transform:uppercase;}
+.cmp-day-head h3{font-size:21px;font-weight:700;margin-top:4px;}
+.cmp-shared-badge{
+  display:inline-flex;align-items:center;gap:6px;background:var(--gray-bg);color:var(--gray-1);
+  font-size:11px;font-weight:600;padding:5px 14px;border-radius:980px;margin-top:10px;
+}
+.cmp-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+.cmp-col{padding:20px 22px;}
+.cmp-col.sun{background:rgba(217,101,15,.04);border-right:1px solid var(--line);}
+.cmp-col.rain{background:rgba(0,113,227,.04);}
+.cmp-col-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:14px;}
+.cmp-col.sun .cmp-col-head{color:#d9650f;}
+.cmp-col.rain .cmp-col-head{color:#0071e3;}
+.cmp-ev{padding:9px 0;border-top:1px solid var(--line);font-size:13px;}
+.cmp-ev:first-child{border-top:none;}
+.cmp-ev .ce-time{font-weight:600;color:var(--black);margin-right:8px;font-variant-numeric:tabular-nums;font-size:12px;}
+.cmp-ev .ce-text{color:var(--black);}
+.cmp-ev .ce-note{display:block;color:var(--gray-1);font-size:12px;margin-top:2px;}
+@media(max-width:680px){
+  .cmp-cols{grid-template-columns:1fr;}
+  .cmp-col.sun{border-right:none;border-bottom:1px solid var(--line);}
+}
 
 /* ════════ CHECKLIST ════════ */
 .ev{position:relative;}
@@ -264,7 +331,7 @@ a:hover{text-decoration:underline;}
 
 /* ════════ SECTION SCAFFOLDING ════════ */
 section{max-width:980px;margin:0 auto;padding:0 22px;}
-.section-pad{padding-top:90px;padding-bottom:90px;scroll-margin-top:90px;}
+.section-pad{padding-top:90px;padding-bottom:90px;scroll-margin-top:146px;}
 .section-head{text-align:center;margin-bottom:56px;}
 .section-head .k{font-size:13px;font-weight:600;color:var(--blue);letter-spacing:.3px;margin-bottom:10px;text-transform:uppercase;}
 .section-head h2{font-size:clamp(32px,5vw,48px);font-weight:700;letter-spacing:-.02em;color:var(--black);}
@@ -276,10 +343,10 @@ section{max-width:980px;margin:0 auto;padding:0 22px;}
 .day-row{
   display:grid;grid-template-columns:200px 1fr;gap:48px;
   padding:64px 0;border-top:1px solid var(--line);
-  scroll-margin-top:96px;
+  scroll-margin-top:146px;
 }
 .day-row:first-child{border-top:none;}
-.day-side{position:sticky;top:90px;align-self:start;}
+.day-side{position:sticky;top:146px;align-self:start;}
 .day-num{font-size:64px;font-weight:800;letter-spacing:-.03em;color:var(--black);line-height:1;}
 .day-date{font-size:14px;color:var(--gray-1);font-weight:500;margin-top:6px;}
 .day-hotel-tag{
@@ -426,11 +493,19 @@ a:focus-visible,.nav-links button:focus-visible{outline:2px solid var(--blue);ou
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 </div>
 
+<div class="switcher-wrap">
+  <div class="switcher" id="switcher">
+    <button class="sw-btn sun on" type="button" data-weather="sun">☀️ 晴れの日プラン</button>
+    <button class="sw-btn rain" type="button" data-weather="rain">☔ 雨の日プラン</button>
+  </div>
+  <button class="sw-cmp" id="cmpToggle" type="button">⇄ 比較表示</button>
+</div>
+
 <div class="hero">
-  <div class="eyebrow">Family Itinerary</div>
+  <div class="eyebrow"><span id="planChip" class="plan-chip">☀️ 晴れの日プラン</span></div>
   <h1>沖縄。</h1>
-  <p class="sub">5日間、すべてが決まっている旅。</p>
-  <div class="dates"><b>7月14日</b> — <b>7月18日</b>　·　2026</div>
+  <p class="sub" id="heroSub">海中クルージングと、もとぶのイルカたち。</p>
+  <div class="dates"><b>7月14日</b> — <b>7月18日</b>　·　第6希望プラン</div>
   <div class="countdown" id="countdown"></div>
 </div>
 
@@ -446,6 +521,12 @@ a:focus-visible,.nav-links button:focus-visible{outline:2px solid var(--blue);ou
   <div id="dayRows"></div>
 </section>
 <div class="no-match" id="noMatch">該当する予定が見つかりません。</div>
+
+<div class="compare-view" id="compareView">
+  <section class="section-pad" id="cmpSection">
+    <div id="cmpBody"></div>
+  </section>
+</div>
 
 <section class="map-dark section-pad" id="map">
   <div class="section-head">
@@ -471,7 +552,7 @@ a:focus-visible,.nav-links button:focus-visible{outline:2px solid var(--blue);ou
 </section>
 
 <div class="footer">
-  <p>2026年6月13日作成 ／ 第５希望プラン（最終・完全版）</p>
+  <p>2026年6月25日作成 ／ 第6希望プラン（晴れ／雨 両対応・地図＆予約番号付き）</p>
   <p class="heart">良い旅を。</p>
 </div>
 
@@ -513,10 +594,9 @@ a:focus-visible,.nav-links button:focus-visible{outline:2px solid var(--blue);ou
 </div>
 
 <script>
-/* ════════ DATA ════════ */
-const DAYS = [
-{
-  num:'1', date:'7月14日（火）', title:'前日移動。', hotel:'ヴィラフォンテーヌグランド羽田空港',
+/* ════════ SHARED DATA (identical in both weather plans) ════════ */
+const DAY1 = {
+  num:'1', date:'7月14日（火）', title:'前日移動。', hotel:'ヴィラフォンテーヌグランド羽田空港', shared:true,
   split:true,
   parents:[
     {t:'10:44', txt:'雀宮発・JR宇都宮線', note:'宇都宮駅着 10:51'},
@@ -532,122 +612,229 @@ const DAYS = [
     {t:'21:20', txt:'到着ロビーから羽田エアポートガーデンへ直結', note:'屋内通路の動く歩道でホテル入口到着'},
     {t:'21:30', txt:'ホテルチェックイン', note:'展望天然温泉チケット付', warn:'着いたら母にLINE'},
   ]
-},
-{
-  num:'2', date:'7月15日（水）', title:'那覇着、そして海中クルージング。', hotel:'シェラトン沖縄サンマリーナリゾート',
+};
+const DAY2_MORNING = [
+  {t:'05:50', txt:'ホテルをチェックアウト → 第3ターミナル1階へ'},
+  {t:'06:05', txt:'ターミナル間無料連絡バス（0番乗場）に乗車', note:'4分間隔運行 / 第1ターミナル着後、2階出発ロビー北ウイングへ'},
+  {t:'06:20', txt:'搭乗チェックイン＆荷物の預け入れ', note:'2階・時計台4付近のSKY自動チェックイン機'},
+  {t:'06:25', txt:'朝食＆お手洗い', note:'空弁工房 または ブルースカイ（2階出発ロビー中央寄り）'},
+  {t:'07:10', txt:'保安検査場（Gゲート）を通過'},
+  {t:'07:20', txt:'搭乗口ゲートに到着', note:'搭乗案内は出発20〜25分前から'},
+  {t:'07:45', txt:'羽田空港第1ターミナル発・SKY513便', note:'那覇空港着 10:30'},
+];
+const DAY5 = {
+  num:'5', date:'7月18日（土）', title:'帰路。', hotel:null, shared:true,
   events:[
-    {t:'05:50', txt:'ホテルをチェックアウト → 第3ターミナル1階へ'},
-    {t:'06:05', txt:'ターミナル間無料連絡バス（0番乗場）に乗車', note:'4分間隔運行 / 第1ターミナル着後、2階出発ロビー北ウイングへ'},
-    {t:'06:25', txt:'搭乗チェックイン＆荷物の預け入れ', note:'2階・時計台4付近のSKY自動チェックイン機'},
-    {t:'06:35', txt:'朝食＆お手洗い', note:'空弁工房 または ブルースカイ（2階出発ロビー中央寄り）'},
-    {t:'07:10', txt:'保安検査場（Gゲート）を通過'},
-    {t:'07:20', txt:'搭乗口ゲートに到着', note:'搭乗案内は出発20〜25分前から'},
-    {t:'07:45', txt:'羽田空港第1ターミナル発・SKY513便', note:'那覇空港着 10:30'},
-    {t:'11:00', txt:'らくらくタクシー（6時間フリープラン）', tel:'098-946-5005'},
-    {t:'11:00', txt:'那覇空港発 → 楚辺（そべ）そば', note:'着 11:15・ランチでそーきそばを堪能 / 13:00発 → 那覇埠頭船客待合所へ（10分）'},
-    {t:'13:10', txt:'那覇埠頭・オルカ号乗船場に到着', note:'受付締切 13:40', warn:'受付を済ませる', tel:'098-866-0498'},
-    {t:'14:00', txt:'3便 オルカ号 海中クルージング', note:'所要60分。デッキで海を体感した後、水中展望室の窓からサンゴ礁と熱帯魚を鑑賞'},
-    {t:'15:00', txt:'帰港 → ホテルへ出発', note:'車で約55分・高速代1,010円追加'},
-    {t:'16:00', txt:'シェラトン沖縄サンマリーナリゾート チェックイン', note:'スカイパック', tel:'098-965-2222'},
-    {t:'16:00', txt:'リゾートパス購入', note:'スパ「ぬちすぐい」・ビーチパラソル・チェア2脚付・プールスライダー滑り放題'},
-    {t:'16:15', txt:'泳がない派は白い桟橋を洋服のままお散歩'},
-    {t:'18:00', txt:'サンセットを眺めながら大浴場', note:'滞在1時間・パスポート持参・タオル用意あり'},
-    {t:'19:30', txt:'夕食 — ダイニングルーム「センス」', note:'サンダル厳禁・キレいめな服装と靴'},
-    {t:'22:00', txt:'就寝'},
-  ]
-},
-{
-  num:'3', date:'7月16日（木）', title:'イルカと触れ合う一日。', hotel:'ホテルオリオンモトブリゾート＆スパ',
-  events:[
-    {t:'07:00', txt:'朝食 — センスで朝食ビュッフェ'},
-    {t:'10:30', txt:'シェラトン沖縄サンマリーナリゾート チェックアウト', note:'タクシーでもとぶ元気村へ（移動約1時間＋渋滞）'},
-    {t:'11:00', txt:'らくらくタクシー（5時間フリープラン）', tel:'098-946-5005'},
-    {t:'12:00', txt:'マリンピアザオキナワ（もとぶ元気村）に到着'},
-    {t:'12:00', txt:'ランチ — マリンピアザ沖縄 レストラン「ブリーズ」', note:'滞在1時間・12時より席のみ予約'},
-    {t:'13:25', txt:'元気村の受付へ移動・お着替え', note:'水着＆ビーチ靴着用', tel:'0980-51-7878'},
-    {t:'13:30', txt:'ドルフィンエンカウンター 20分前集合', warn:'開始20分前までに受付（無効注意）'},
-    {t:'14:00', txt:'ドルフィンエンカウンター', note:'イルカと触れ合う・所要50分'},
-    {t:'15:00', txt:'着替え後・タクシーで帰る', note:'所要10分'},
-    {t:'15:10', txt:'ホテルオリオンモトブリゾート＆スパ チェックイン', note:'朝食・天然温泉利用・ラウンジアクセス付', tel:'0980-51-7300'},
-    {t:'15:10', txt:'クラブラウンジ ティータイム', note:'14:30〜16:30はケーキ・焼き菓子が無料'},
-    {t:'16:00', txt:'綺麗なエメラルドビーチで遊ぶ'},
-    {t:'19:30', txt:'夕食 — The Orion Brasserie ＆ Table', note:'席のみ予約'},
-    {t:'21:30', txt:'クラブラウンジ バータイム', note:'19:00〜22:00、スパークリングワインとつまみが無料 / 就寝'},
-  ]
-},
-{
-  num:'4', date:'7月17日（金）', title:'美ら海、そして古宇利島ドライブ。', hotel:'ルネッサンスリゾートオキナワ',
-  events:[
-    {t:'07:00', txt:'朝食 — オールダイニング「シリウス」', note:'テラス席がおすすめ'},
-    {t:'08:00', txt:'ホテルオリオンモトブリゾート＆スパ チェックアウト', note:'荷物を預かってもらう / 美ら海水族館へ徒歩7分'},
-    {t:'08:30', txt:'美ら海水族館を見学', note:'熱帯魚・サンゴ・深海など。リニューアルした深海探検の部屋で珍しい深海魚を見る'},
-    {t:'10:10', txt:'イルカショー — 屋外オープンエアースタジアムへ', note:'席を確保しておく'},
-    {t:'10:30', txt:'オキちゃん劇場でイルカショー', note:'10:50開演・滞在20分間'},
-    {t:'12:00', txt:'らくらくタクシー（5時間フリープラン）', note:'美ら海水族館からタクシーでホテルに立ち寄り、預けた荷物を取る'},
-    {t:'12:12', txt:'ホテルオリオン出発 → 備瀬のフクギ並木へ'},
-    {t:'12:15', txt:'フクギ並木をお散歩', note:'滞在約45分。フクギ屋や美ら海そば、卵焼きなどの軽食を楽しむ'},
-    {t:'13:00', txt:'備瀬のフクギ並木発 → タクシーで移動', note:'ワルミ大橋経由の絶景ドライブ・約35分'},
-    {t:'13:35', txt:'ティーヌ浜着・ハートロックを見学', note:'滞在25分・記念撮影 → 移動5分'},
-    {t:'14:00', txt:'古宇利オーシャンタワー＆シェルミュージアム', note:'滞在1時間。展望カフェで絶景を見ながらドリンク・デザートタイム'},
-    {t:'15:00', txt:'古宇利オーシャンタワー発 → 名護湾沿いを南下', note:'約50分＋渋滞時間。時間があれば万座毛に立ち寄る'},
-    {t:'16:30', txt:'ルネッサンスリゾートオキナワ チェックイン', note:'3階・琉球スイート。朝・夕食・山田温泉利用', tel:'098-965-0707'},
-    {t:'16:40', txt:'クラブラウンジでフリードリンク'},
-    {t:'17:00', txt:'ビーチ散策', note:'動物園にいる生き物やイルカ・魚・カメがいる'},
-    {t:'18:30', txt:'山田温泉に浸かる', note:'日が沈む前の明るいうちが海が綺麗に見えて素敵。タオル・水分あり、手ぶらでOK'},
-    {t:'19:30', txt:'夕食 — 「彩」懐石料理', note:'サンダル厳禁・キレイめな服装と靴'},
-    {t:'22:00', txt:'就寝'},
-  ]
-},
-{
-  num:'5', date:'7月18日（土）', title:'帰路。', hotel:null,
-  events:[
-    {t:'07:00', txt:'朝食 — フォーシーズン（フレンチ＆鉄板焼）'},
-    {t:'10:15', txt:'クラブラウンジへ移動・チェックアウト手続き'},
-    {t:'10:30', txt:'ホテルのエントランスから専用送迎で那覇空港へ出発'},
-    {t:'11:50', txt:'那覇空港 出発ロビー（3階中央付近）に到着', note:'余裕を持って手続き・お買い物を'},
-    {t:'12:00', txt:'スカイマークでチェックイン＆荷物預け', note:'自動チェックイン機 → 発券後、手荷物カウンターで預ける'},
+    {t:'07:00', txt:'朝食ビュッフェ'},
+    {t:'09:45', txt:'混みあう前にホテルをチェックアウト', note:'ホテル目の前のバス停へ徒歩1分'},
+    {t:'10:04', txt:'ウミカジライナー（那覇空港行き）に乗車', note:'バス移動約18分・10:30頃着 / 乗れなければ10:24発もある'},
+    {t:'10:22', txt:'那覇空港に到着', note:'余裕を持って手続き・お買い物を'},
+    {t:'10:30', txt:'スカイマークでチェックイン＆荷物預け', note:'自動チェックイン機 → 発券後、手荷物カウンターで預ける'},
+    {t:'11:00', txt:'開店直後を狙ってランチ＆お土産タイム', note:'最後にたっぷり余裕で沖縄そばなど'},
     {t:'12:10', txt:'1階「ポークたまごおにぎり専門店」がおすすめ'},
     {t:'12:55', txt:'保安検査場（荷物検査）を通過'},
     {t:'13:20', txt:'那覇空港発・SKY518便', note:'羽田空港着 15:50。BaggageClaim案内看板を目指し手荷物受取所へ・引き換え番号を確認'},
   ]
-},
+};
+
+/* ════════ PLAN: SUNNY (☀️ 晴れの日プラン) ════════ */
+const SUN_DAYS = [
+  DAY1,
+  {
+    num:'2', date:'7月15日（水）', title:'那覇着、そして海中クルージング。', hotel:'シェラトン沖縄サンマリーナリゾート',
+    events: DAY2_MORNING.concat([
+      {t:'11:00', txt:'らくらくタクシー（6時間フリープラン）', tel:'098-946-5005'},
+      {t:'11:00', txt:'那覇空港発 → 楚辺（そべ）そば', note:'着 11:15・ランチでそーきそばを堪能 / 13:00発 → 那覇埠頭船客待合所へ（10分）'},
+      {t:'13:10', txt:'那覇埠頭・オルカ号乗船場に到着', note:'受付締切 13:40', warn:'受付を済ませる', tel:'098-866-0498'},
+      {t:'14:00', txt:'3便 オルカ号 海中クルージング', note:'所要60分。デッキで海を体感した後、水中展望室の窓からサンゴ礁と熱帯魚を鑑賞'},
+      {t:'15:00', txt:'帰港 → ホテルへ出発', note:'車で約55分・高速代1,010円追加 / 翌日のイルカは本日15時以降キャンセル料発生', warn:'15時以降キャンセル料注意'},
+      {t:'16:00', txt:'シェラトン沖縄サンマリーナリゾート チェックイン', note:'スカイパック', tel:'098-965-2222'},
+      {t:'16:00', txt:'リゾートパス購入', note:'スパ「ぬちすぐい」・ビーチパラソル・チェア2脚付・プールスライダー滑り放題'},
+      {t:'16:15', txt:'ホテル目の前のサンマリーナビーチで遊ぶ'},
+      {t:'18:00', txt:'サンセットを眺めながら大浴場', note:'滞在1時間・パスポート持参・タオル用意あり'},
+      {t:'19:30', txt:'夕食 — ダイニングルーム「センス」', note:'サンダル厳禁・キレイめな服装と靴'},
+      {t:'22:00', txt:'就寝'},
+    ])
+  },
+  {
+    num:'3', date:'7月16日（木）', title:'イルカと触れ合い、熱帯ドリームセンターへ。', hotel:'ホテルオリオンモトブリゾート＆スパ',
+    events:[
+      {t:'07:00', txt:'朝食 — センスで朝食ビュッフェ'},
+      {t:'10:30', txt:'シェラトン沖縄サンマリーナリゾート チェックアウト', note:'タクシーでもとぶ元気村へ（移動約1時間＋渋滞）'},
+      {t:'11:00', txt:'らくらくタクシー（5時間フリープラン）', tel:'098-946-5005'},
+      {t:'12:40', txt:'マリンピアザオキナワ（もとぶ元気村）に到着', note:'あちこち見て楽しみつつ、レストランブリーズへ移動（1分）'},
+      {t:'13:00', txt:'ランチ — マリンピアザ沖縄 レストラン「ブリーズ」', note:'滞在1時間・席のみ予約済み', tel:''},
+      {t:'13:30', txt:'元気村の受付へ移動・お着替え', note:'水着＆ビーチ靴着用', tel:'0980-51-7878'},
+      {t:'13:40', txt:'ドルフィンエンカウンター 20分前集合', warn:'開始20分前までに受付（無効注意）'},
+      {t:'14:00', txt:'ドルフィンエンカウンター', note:'イルカと触れ合う・所要50分'},
+      {t:'14:50', txt:'着替え後・荷物の整理', note:'約15分'},
+      {t:'15:05', txt:'もとぶ元気村を出発', note:'移動約5分'},
+      {t:'15:10', txt:'熱帯ドリームセンターに到着', note:'トロピカルスイーツと花を楽しむ・滞在約40分（15:50まで）→移動約5分'},
+      {t:'15:55', txt:'ホテルオリオンモトブリゾート＆スパ チェックイン', note:'朝食付き・天然温泉のチケットを購入する', tel:'0980-51-7300'},
+      {t:'16:30', txt:'綺麗なエメラルドビーチで遊ぶ／備瀬先で遊ぶ'},
+      {t:'19:30', txt:'夕食 — The Orion Brasserie ＆ Table', note:'席のみ予約'},
+      {t:'21:00', txt:'温泉「美ら海の湯」で疲れを癒す・就寝'},
+    ]
+  },
+  {
+    num:'4', date:'7月17日（金）', title:'美ら海、古宇利島、そして瀬長島へ。', hotel:'琉球温泉瀬長島ホテル',
+    events:[
+      {t:'07:00', txt:'朝食 — オールダイニング「シリウス」', note:'テラス席がおすすめ'},
+      {t:'08:00', txt:'ホテルオリオンモトブリゾート＆スパ チェックアウト', note:'荷物を預かってもらう / 美ら海水族館へ徒歩7分'},
+      {t:'08:30', txt:'美ら海水族館を見学', note:'熱帯魚・サンゴ・深海など。リニューアルした深海探検の部屋で珍しい深海魚を見る'},
+      {t:'10:10', txt:'イルカショー — 屋外オープンエアースタジアムへ', note:'席を確保しておく'},
+      {t:'10:30', txt:'オキちゃん劇場でイルカショー', note:'10:50開演・滞在20分間'},
+      {t:'11:00', txt:'古宇利オーシャンタワーは滞在時間が少ないため、軽食を取っておく（自由）'},
+      {t:'12:00', txt:'らくらくタクシー（5時間フリープラン）', note:'美ら海水族館からタクシーでホテルに立ち寄り、預けた荷物を取る'},
+      {t:'12:12', txt:'ホテルオリオン出発', note:'移動2分'},
+      {t:'13:12', txt:'備瀬のフクギをタクシーで通過 → 備瀬先へ', note:'滞在30分間（12:50まで）'},
+      {t:'13:21', txt:'備瀬先発 → ワルミ大橋へ', note:'移動約22分・数分停車してワルミ海峡の絶景を橋の上から見下ろす → 移動7分'},
+      {t:'13:36', txt:'古宇利大橋を渡り古宇利ビーチへ', note:'約10分滞在 → 移動5分'},
+      {t:'14:00', txt:'ハートロック（ティーヌ浜）見学', note:'滞在約20分（13:56頃まで）→ 移動約5分'},
+      {t:'14:50', txt:'古宇利オーシャンタワー＆シェルミュージアム', note:'滞在約50分。展望カフェで絶景を見ながらドリンクタイム'},
+      {t:'16:45', txt:'古宇利オーシャンタワー発 → 名護湾沿いを南下', note:'高速経由で約1時間40分（余裕を持たせています）'},
+      {t:'17:30', txt:'琉球温泉瀬長島ホテル チェックイン'},
+      {t:'18:00', txt:'瀬長島ウミカジテラスを散策', note:'No22 PERLA ABLUにて真珠の取り出し体験（10分・20:00まで）'},
+      {t:'21:00', txt:'夕飯を食べる場所を探す', note:'良いところがなければ瀬長島ホテルでディナーコースを席が空いていれば予約'},
+      {t:'22:00', txt:'天然温泉「龍神の湯」で疲れを癒す・就寝'},
+    ]
+  },
+  DAY5,
 ];
 
-/* ════════ MAP DATA ════════ */
-const MAP_SPOTS = [
+/* ════════ PLAN: RAINY (☔ 雨の日プラン) ════════ */
+const RAIN_DAYS = [
+  DAY1,
+  {
+    num:'2', date:'7月15日（水）', title:'那覇着、室内中心でゆったりと。', hotel:'シェラトン沖縄サンマリーナリゾート',
+    events: DAY2_MORNING.concat([
+      {t:'07:45', txt:'※天候が悪くオルカ号に乗れなくなった場合のプラン'},
+      {t:'11:00', txt:'らくらくタクシー（6時間フリープラン）', note:'那覇空港から車で約20分', tel:'098-946-5005'},
+      {t:'11:20', txt:'イーアス沖縄豊崎で早めのランチ', note:'12:15まで'},
+      {t:'12:15', txt:'DMMかりゆし水族館で観光', note:'約1時間25分（13:40まで）'},
+      {t:'13:40', txt:'豊崎を出発 → 国道58号または高速で北上', note:'約40分。イルカエンカウンターは本日15時以降キャンセル料100%', warn:'15時以降キャンセル料100%'},
+      {t:'14:20', txt:'美浜タウンリゾート・アメリカンビレッジを散策', note:'約1時間10分（15:30まで）'},
+      {t:'15:30', txt:'アメリカンビレッジを出発', note:'北谷から高速道路（沖縄南IC→石川IC）'},
+      {t:'16:10', txt:'シェラトン沖縄サンマリーナリゾート チェックイン', note:'スカイパック', tel:'098-965-2222'},
+      {t:'16:10', txt:'雨の場合は大浴場の券2,000円を3枚分購入', note:'プールやゲーム遊びをしたいならリゾートパックを購入'},
+      {t:'18:00', txt:'サンセットを眺めながら大浴場', note:'滞在1時間・パスポート持参・タオル用意あり'},
+      {t:'19:30', txt:'夕食 — ダイニングルーム「センス」', note:'サンダル厳禁・キレイめな服装と靴'},
+      {t:'22:00', txt:'就寝'},
+    ])
+  },
+  {
+    num:'3', date:'7月16日（木）', title:'琉球村と熱帯ドリームセンター、雨でも楽しむ。', hotel:'ホテルオリオンモトブリゾート＆スパ',
+    events:[
+      {t:'07:00', txt:'朝食 — センスで朝食ビュッフェ'},
+      {t:'10:30', txt:'シェラトン沖縄サンマリーナリゾート チェックアウト'},
+      {t:'11:00', txt:'らくらくタクシー（5時間フリープラン）', note:'もとぶ元気村でイルカNGプラン', tel:'098-946-5005'},
+      {t:'11:10', txt:'琉球村を満喫', note:'たっぷり2時間・遊び＆ランチ（13:10まで）'},
+      {t:'13:10', txt:'琉球村を出発', note:'高速道路（石川ICなど利用）で北上ドライブ約50分〜1時間'},
+      {t:'14:10', txt:'熱帯ドリームセンター', note:'約1時間（15:10まで）→ 移動3分'},
+      {t:'15:15', txt:'オリオンモトブリゾート＆スパに到着＆チェックイン'},
+      {t:'18:00', txt:'美ら海の湯に浸かり疲れを癒す'},
+      {t:'19:30', txt:'夕食 — The Orion Brasserie ＆ Table', note:'席のみ予約'},
+      {t:'23:00', txt:'就寝'},
+    ]
+  },
+  {
+    num:'4', date:'7月17日（金）', title:'美ら海、古宇利島（雨天版）、そして瀬長島へ。', hotel:'琉球温泉瀬長島ホテル',
+    events:[
+      {t:'07:00', txt:'朝食 — オールダイニング「シリウス」', note:'テラス席がおすすめ'},
+      {t:'08:00', txt:'ホテルオリオンモトブリゾート＆スパ チェックアウト', note:'荷物を預かってもらう / 美ら海水族館へ徒歩7分'},
+      {t:'08:30', txt:'美ら海水族館を見学', note:'熱帯魚・サンゴ・深海など。リニューアルした深海探検の部屋で珍しい深海魚を見る'},
+      {t:'10:10', txt:'（天候次第）イルカショー — 屋外オープンエアースタジアムへ', note:'席を確保しておく'},
+      {t:'10:30', txt:'オキちゃん劇場でイルカショー', note:'10:50開演・滞在20分間'},
+      {t:'12:00', txt:'らくらくタクシー（5時間フリープラン）', note:'美ら海水族館からタクシーでホテルに立ち寄り、預けた荷物を取る（5分）'},
+      {t:'12:05', txt:'ホテルオリオンモトブリゾート＆スパ出発', note:'移動約35分'},
+      {t:'12:50', txt:'古宇利オーシャンタワー＆シェルミュージアム', note:'滞在1時間25分。展望カフェで絶景を見ながらランチタイム'},
+      {t:'14:15', txt:'ハートロック見学', note:'滞在30分', warn:'大雨時は足元注意'},
+      {t:'14:15', txt:'大雨の場合の代替案', note:'足元が滑りやすく危険なため、ハートロックがある島の北側エリアも含めて島を優雅に1周ドライブ＋車窓休憩に変更'},
+      {t:'15:00', txt:'古宇利島を離れ高速道路で一気に南部へ', note:'約1時間40分＋渋滞時間'},
+      {t:'17:00', txt:'琉球温泉瀬長島ホテル チェックイン'},
+      {t:'18:00', txt:'ホテルから徒歩1分のウミカジテラスにて夕食'},
+      {t:'20:00', txt:'無料の天然温泉「龍神の湯」で疲れを癒す'},
+      {t:'22:00', txt:'就寝'},
+    ]
+  },
+  DAY5,
+];
+
+const PLANS = {sun: SUN_DAYS, rain: RAIN_DAYS};
+let CURRENT_WEATHER = 'sun';
+let DAYS = SUN_DAYS; // kept for backward-compatible references below
+
+/* ════════ MAP DATA (per weather plan) ════════ */
+const MAP_SHARED_START = [
   {day:'Day 1', name:'ヴィラフォンテーヌグランド羽田空港', sub:'前日泊', q:'ヴィラフォンテーヌグランド羽田空港'},
+];
+const MAP_SHARED_END = [
+  {day:'Day 5', name:'那覇空港', sub:'出発', q:'那覇空港'},
+];
+const MAP_SPOTS_SUN = MAP_SHARED_START.concat([
   {day:'Day 2', name:'楚辺そば', sub:'ランチ', q:'楚辺そば 那覇'},
   {day:'Day 2', name:'那覇埠頭', sub:'オルカ号乗船場', q:'那覇埠頭 旅客ターミナルビル'},
   {day:'Day 2', name:'シェラトン沖縄サンマリーナリゾート', sub:'2泊目', q:'シェラトン沖縄サンマリーナリゾート'},
   {day:'Day 3', name:'マリンピアザ沖縄（もとぶ元気村）', sub:'イルカ体験', q:'もとぶ元気村'},
+  {day:'Day 3', name:'熱帯ドリームセンター', sub:'トロピカルスイーツ', q:'熱帯ドリームセンター 沖縄'},
   {day:'Day 3', name:'ホテルオリオンモトブリゾート＆スパ', sub:'3泊目', q:'ホテルオリオンモトブリゾートアンドスパ'},
   {day:'Day 4', name:'沖縄美ら海水族館', sub:'見学・イルカショー', q:'沖縄美ら海水族館'},
-  {day:'Day 4', name:'備瀬のフクギ並木', sub:'散策', q:'備瀬のフクギ並木'},
+  {day:'Day 4', name:'古宇利大橋・古宇利ビーチ', sub:'絶景ドライブ', q:'古宇利大橋'},
   {day:'Day 4', name:'ティーヌ浜（ハートロック）', sub:'記念撮影', q:'ティーヌ浜 ハートロック'},
   {day:'Day 4', name:'古宇利オーシャンタワー', sub:'展望・カフェ', q:'古宇利オーシャンタワー'},
-  {day:'Day 4', name:'ルネッサンスリゾートオキナワ', sub:'4泊目', q:'ルネッサンスリゾートオキナワ'},
-  {day:'Day 5', name:'那覇空港', sub:'出発', q:'那覇空港'},
-];
+  {day:'Day 4', name:'琉球温泉瀬長島ホテル', sub:'4泊目', q:'琉球温泉瀬長島ホテル'},
+  {day:'Day 4', name:'瀬長島ウミカジテラス', sub:'散策・真珠取り出し体験', q:'瀬長島ウミカジテラス'},
+]).concat(MAP_SHARED_END);
 
-/* ════════ RESERVATIONS DATA ════════ */
-const RES = [
+const MAP_SPOTS_RAIN = MAP_SHARED_START.concat([
+  {day:'Day 2', name:'イーアス沖縄豊崎', sub:'ランチ', q:'イーアス沖縄豊崎'},
+  {day:'Day 2', name:'DMMかりゆし水族館', sub:'観光', q:'DMMかりゆし水族館'},
+  {day:'Day 2', name:'美浜タウンリゾート・アメリカンビレッジ', sub:'散策', q:'アメリカンビレッジ 北谷'},
+  {day:'Day 2', name:'シェラトン沖縄サンマリーナリゾート', sub:'2泊目', q:'シェラトン沖縄サンマリーナリゾート'},
+  {day:'Day 3', name:'琉球村', sub:'遊び＆ランチ', q:'琉球村 沖縄'},
+  {day:'Day 3', name:'熱帯ドリームセンター', sub:'トロピカルスイーツ', q:'熱帯ドリームセンター 沖縄'},
+  {day:'Day 3', name:'ホテルオリオンモトブリゾート＆スパ', sub:'3泊目', q:'ホテルオリオンモトブリゾートアンドスパ'},
+  {day:'Day 4', name:'沖縄美ら海水族館', sub:'見学・イルカショー', q:'沖縄美ら海水族館'},
+  {day:'Day 4', name:'古宇利オーシャンタワー', sub:'展望・ランチ', q:'古宇利オーシャンタワー'},
+  {day:'Day 4', name:'琉球温泉瀬長島ホテル', sub:'4泊目', q:'琉球温泉瀬長島ホテル'},
+  {day:'Day 4', name:'瀬長島ウミカジテラス', sub:'夕食', q:'瀬長島ウミカジテラス'},
+]).concat(MAP_SHARED_END);
+
+const MAP_PLANS = {sun: MAP_SPOTS_SUN, rain: MAP_SPOTS_RAIN};
+
+/* ════════ RESERVATIONS DATA (per weather plan) ════════ */
+const RES_SHARED_START = [
   {day:'Day 1', name:'ヴィラフォンテーヌグランド羽田空港', detail:'3名1室・素泊まり', tel:'03-6459-9770', id:'OGMLU8MM', status:'confirmed'},
-  {day:'Day 2', name:'らくらくタクシー（6時間）', detail:'6時間フリープラン', tel:'098-946-5005', id:'6378879', status:'confirmed'},
+];
+const RES_SUN = RES_SHARED_START.concat([
+  {day:'Day 2', name:'らくらくタクシー（6時間）', detail:'6時間フリープラン', tel:'098-946-5005', id:'6378879-S', status:'confirmed'},
   {day:'Day 2', name:'ウエストマリン オルカ号', detail:'海中クルージング・3便', tel:'098-866-0498', id:'電話確認制', status:'confirmed'},
   {day:'Day 2', name:'シェラトン沖縄サンマリーナリゾート', detail:'スカイパック', tel:'098-965-2222', id:'SPT09Bi82200-01', status:'confirmed'},
-  {day:'Day 3', name:'らくらくタクシー（5時間）', detail:'5時間フリープラン', tel:'098-946-5005', id:'6378881', status:'confirmed'},
+  {day:'Day 3', name:'らくらくタクシー（5時間）', detail:'5時間フリープラン', tel:'098-946-5005', id:'6378881-S', status:'confirmed'},
   {day:'Day 3', name:'マリンピアザ沖縄 レストラン ブリーズ', detail:'席のみ予約（楽天ぐるなび）', tel:'—', id:'PL7811676537437fe', status:'check'},
   {day:'Day 3', name:'もとぶ元気村 ドルフィンエンカウンター', detail:'イルカ体験', tel:'0980-51-7878', id:'5021592', status:'confirmed'},
-  {day:'Day 3', name:'ホテルオリオンモトブリゾート＆スパ', detail:'朝食・天然温泉・ラウンジ付', tel:'0980-51-7300', id:'OGMNPHNV', status:'confirmed'},
+  {day:'Day 3', name:'ホテルオリオンモトブリゾート＆スパ', detail:'朝食・天然温泉付', tel:'0980-51-7300', id:'OGMNPHNV-S', status:'confirmed'},
   {day:'Day 3', name:'The Orion Brasserie ＆ Table', detail:'席のみ予約', tel:'—', id:'4KDPTL', status:'check'},
-  {day:'Day 4', name:'らくらくタクシー（5時間）', detail:'5時間フリープラン', tel:'098-946-5005', id:'6379987', status:'confirmed'},
-  {day:'Day 4', name:'ルネッサンスリゾートオキナワ', detail:'琉球スイート・朝夕食付', tel:'098-965-0707', id:'OFM9VX6R', status:'confirmed'},
-  {day:'Day 4', name:'「彩」懐石料理', detail:'夕食', tel:'—', id:'V7F3AK', status:'check'},
-];
+  {day:'Day 4', name:'らくらくタクシー（5時間）', detail:'5時間フリープラン', tel:'098-946-5005', id:'6379987-S', status:'confirmed'},
+  {day:'Day 4', name:'琉球温泉瀬長島ホテル', detail:'チェックイン', tel:'—', id:'要確認', status:'check'},
+  {day:'Day 4', name:'No22 PERLA ABLU', detail:'真珠の取り出し体験', tel:'—', id:'要確認', status:'check'},
+]);
+const RES_RAIN = RES_SHARED_START.concat([
+  {day:'Day 2', name:'らくらくタクシー（6時間）', detail:'雨天プラン・那覇空港から約20分', tel:'098-946-5005', id:'6378879-R', status:'confirmed'},
+  {day:'Day 2', name:'DMMかりゆし水族館', detail:'観光', tel:'—', id:'要確認', status:'check'},
+  {day:'Day 2', name:'シェラトン沖縄サンマリーナリゾート', detail:'スカイパック（雨天時は大浴場券3枚）', tel:'098-965-2222', id:'SPT09Bi82200-01', status:'confirmed'},
+  {day:'Day 3', name:'らくらくタクシー（5時間）', detail:'もとぶ元気村でイルカNGプラン', tel:'098-946-5005', id:'6378881-R', status:'confirmed'},
+  {day:'Day 3', name:'琉球村', detail:'遊び＆ランチ', tel:'—', id:'要確認', status:'check'},
+  {day:'Day 3', name:'ホテルオリオンモトブリゾート＆スパ', detail:'雨天プラン到着・天然温泉利用', tel:'0980-51-7300', id:'OGMNPHNV-R', status:'confirmed'},
+  {day:'Day 3', name:'The Orion Brasserie ＆ Table', detail:'席のみ予約', tel:'—', id:'4KDPTL', status:'check'},
+  {day:'Day 4', name:'らくらくタクシー（5時間）', detail:'5時間フリープラン', tel:'098-946-5005', id:'6379987-R', status:'confirmed'},
+  {day:'Day 4', name:'琉球温泉瀬長島ホテル', detail:'チェックイン', tel:'—', id:'要確認', status:'check'},
+]);
+const RES_PLANS = {sun: RES_SUN, rain: RES_RAIN};
 
 /* ════════ STATE ════════ */
-const STORE_KEY = 'okinawa2026_apple_v1';
-let CHECKED = {}, PINNED = {}, MEMOS = {}, THEME = 'blue', MODE = 'light', FS = 1;
+const STORE_KEY = 'okinawa2026_apple_v2';
+let CHECKED = {}, PINNED = {}, MEMOS = {}, THEME = 'blue', MODE = 'light', FS = 1, WEATHER = 'sun';
 try{
   const saved = JSON.parse(localStorage.getItem(STORE_KEY)) || {};
   CHECKED = saved.checked || {};
@@ -656,9 +843,10 @@ try{
   THEME = saved.theme || 'blue';
   MODE = saved.mode || 'light';
   FS = saved.fs || 1;
+  WEATHER = saved.weather || 'sun';
 }catch{}
 function saveState(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify({checked:CHECKED,pinned:PINNED,memos:MEMOS,theme:THEME,mode:MODE,fs:FS})); }catch{}
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({checked:CHECKED,pinned:PINNED,memos:MEMOS,theme:THEME,mode:MODE,fs:FS,weather:WEATHER})); }catch{}
 }
 
 const TRIP_DATE_MAP = ['2026-07-14','2026-07-15','2026-07-16','2026-07-17','2026-07-18'];
@@ -686,6 +874,9 @@ function evHTML(ev, key){
 }
 
 function dayRowHTML(d,i){
+  // shared days (Day1, Day5) keep one key namespace across weather plans;
+  // weather-specific days get a plan-prefixed namespace so check/pin state doesn't bleed across plans.
+  const ns = d.shared ? `d${i}` : `${WEATHER}-d${i}`;
   const isToday = (i === todayDayIndex());
   let body;
   if(d.split){
@@ -694,16 +885,16 @@ function dayRowHTML(d,i){
         <div class="split-cols">
           <div class="split-col">
             <div class="split-h">父・母ルート</div>
-            ${d.parents.map((e,j)=>evHTML(e,`d${i}-p${j}`)).join('')}
+            ${d.parents.map((e,j)=>evHTML(e,`${ns}-p${j}`)).join('')}
           </div>
           <div class="split-col">
             <div class="split-h">良太ルート</div>
-            ${d.ryota.map((e,j)=>evHTML(e,`d${i}-r${j}`)).join('')}
+            ${d.ryota.map((e,j)=>evHTML(e,`${ns}-r${j}`)).join('')}
           </div>
         </div>
       </div>`;
   } else {
-    body = d.events.map((e,j)=>evHTML(e,`d${i}-e${j}`)).join('');
+    body = d.events.map((e,j)=>evHTML(e,`${ns}-e${j}`)).join('');
   }
   return `
     <div class="day-row${isToday?' is-today':''}" id="day${i}">
@@ -711,6 +902,7 @@ function dayRowHTML(d,i){
         <div class="day-num">${d.num}</div>
         <div class="day-date">${d.date}</div>
         ${d.hotel?`<div class="day-hotel-tag">⌂ ${d.hotel}</div>`:''}
+        ${d.shared?`<div class="day-hotel-tag">◆ 両プラン共通</div>`:''}
         ${isToday?`<div class="today-chip">📍 今日</div>`:''}
       </div>
       <div class="day-main">
@@ -718,36 +910,44 @@ function dayRowHTML(d,i){
         ${body}
         <div class="memo-box">
           <span class="memo-label">✎ メモ</span>
-          <textarea data-memo="${i}" placeholder="この日について気になることをメモ…">${MEMOS[i]||''}</textarea>
+          <textarea data-memo="${ns}" placeholder="この日について気になることをメモ…">${MEMOS[ns]||''}</textarea>
         </div>
       </div>
     </div>`;
 }
-document.getElementById('dayRows').innerHTML = DAYS.map(dayRowHTML).join('');
+
+function renderDays(){
+  DAYS = PLANS[WEATHER];
+  document.getElementById('dayRows').innerHTML = DAYS.map(dayRowHTML).join('');
+}
 
 /* ════════ RENDER: MAP ════════ */
-document.getElementById('mapGrid').innerHTML = MAP_SPOTS.map(s=>`
-  <a class="map-card" href="https://maps.google.com/?q=${encodeURIComponent(s.q)}" target="_blank" rel="noopener">
-    <div class="mc-day">${s.day}</div>
-    <div class="mc-name">${s.name}</div>
-    <div class="mc-sub">${s.sub}</div>
-    <div class="mc-link">地図で見る</div>
-  </a>`).join('');
+function renderMap(){
+  document.getElementById('mapGrid').innerHTML = MAP_PLANS[WEATHER].map(s=>`
+    <a class="map-card" href="https://maps.google.com/?q=${encodeURIComponent(s.q)}" target="_blank" rel="noopener">
+      <div class="mc-day">${s.day}</div>
+      <div class="mc-name">${s.name}</div>
+      <div class="mc-sub">${s.sub}</div>
+      <div class="mc-link">地図で見る</div>
+    </a>`).join('');
+}
 
 /* ════════ RENDER: RESERVATIONS ════════ */
-document.getElementById('resRows').innerHTML = RES.map((r,idx)=>`
-  <div class="res-row">
-    <div class="res-day-tag">${r.day}</div>
-    <div class="res-name">${r.name}<span class="res-detail">${r.detail}</span></div>
-    <div class="res-tel">${r.tel}</div>
-    <div><span class="res-id" data-copy="${r.id}" data-idx="${idx}">${r.id}</span></div>
-    <div><span class="status status-${r.status}">${r.status==='confirmed'?'予約確定':'要確認'}</span></div>
-  </div>`).join('');
+function renderRes(){
+  document.getElementById('resRows').innerHTML = RES_PLANS[WEATHER].map((r,idx)=>`
+    <div class="res-row">
+      <div class="res-day-tag">${r.day}</div>
+      <div class="res-name">${r.name}<span class="res-detail">${r.detail}</span></div>
+      <div class="res-tel">${r.tel}</div>
+      <div><span class="res-id" data-copy="${r.id}" data-idx="${idx}">${r.id}</span></div>
+      <div><span class="status status-${r.status}">${r.status==='confirmed'?'予約確定':'要確認'}</span></div>
+    </div>`).join('');
+}
 
 document.getElementById('resRows').addEventListener('click', e=>{
   const el = e.target.closest('.res-id'); if(!el) return;
   const val = el.dataset.copy;
-  if(val === '電話確認制') return;
+  if(val === '電話確認制' || val === '要確認') return;
   navigator.clipboard?.writeText(val).catch(()=>{});
   const original = el.textContent;
   el.textContent = 'コピーしました';
@@ -756,36 +956,40 @@ document.getElementById('resRows').addEventListener('click', e=>{
 });
 
 /* ════════ NAV: button-based, index-driven (avoids any ID/hash heuristics) ════════ */
-const sectionEls = [
-  ...DAYS.map((_,i)=>document.querySelectorAll('.day-row')[i]),
-  document.getElementById('map'),
-  document.getElementById('reservations')
-];
 const navLinks = document.querySelectorAll('.nav-links button');
+let dayObserver = null;
+function getSectionEls(){
+  return [
+    ...DAYS.map((_,i)=>document.querySelectorAll('.day-row')[i]),
+    document.getElementById('map'),
+    document.getElementById('reservations')
+  ];
+}
+function observeNav(){
+  if(dayObserver) dayObserver.disconnect();
+  const sections = getSectionEls();
+  dayObserver = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        const idx = sections.indexOf(en.target);
+        navLinks.forEach((a,j)=>a.classList.toggle('on', j===idx));
+      }
+    });
+  },{threshold:0,rootMargin:'-45% 0px -50% 0px'});
+  sections.forEach(s=>s && dayObserver.observe(s));
+}
 navLinks.forEach((btn, idx)=>{
   btn.addEventListener('click', e=>{
     e.preventDefault();
     e.stopPropagation();
-    const target = sectionEls[idx];
+    const target = getSectionEls()[idx];
     if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-    // defensively strip any hash the platform may have appended
     if(window.location.hash && history.replaceState){
       history.replaceState(null, '', window.location.pathname + window.location.search);
     }
     return false;
   });
 });
-
-const sections = sectionEls;
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(en=>{
-    if(en.isIntersecting){
-      const idx = sections.indexOf(en.target);
-      navLinks.forEach((a,j)=>a.classList.toggle('on', j===idx));
-    }
-  });
-},{threshold:0,rootMargin:'-45% 0px -50% 0px'});
-sections.forEach(s=>s && io.observe(s));
 
 /* ════════ COUNTDOWN ════════ */
 function renderCountdown(){
@@ -984,14 +1188,114 @@ function renderPinnedDrawer(){
   }
   body.innerHTML = pinnedKeys.map(key=>{
     const evEl = document.querySelector(`.ev[data-key="${key}"]`);
-    if(!evEl) return '';
-    const dayIdx = key.split('-')[0].replace('d','');
-    const day = DAYS[+dayIdx];
+    if(!evEl){
+      // event belongs to the other weather plan currently not rendered
+      return `<div class="pd-item"><div class="pd-day">${key.startsWith('sun-')?'☀️ 晴れプラン':key.startsWith('rain-')?'☔ 雨プラン':'共通'}</div>（${WEATHER==='sun'?'雨':'晴れ'}プラン表示中のため非表示）</div>`;
+    }
     const title = evEl.querySelector('.ev-title').textContent;
     const time = evEl.querySelector('.ev-time').textContent;
-    return `<div class="pd-item"><div class="pd-day">Day ${day.num} ・ ${day.date}</div><strong>${time}</strong> — ${title}</div>`;
+    return `<div class="pd-item"><div class="pd-day">${time}</div>${title}</div>`;
   }).join('');
 }
+
+/* ════════ WEATHER PLAN SWITCHER ════════ */
+function applyWeather(){
+  document.documentElement.setAttribute('data-weather', WEATHER);
+  document.querySelectorAll('.sw-btn').forEach(b=>b.classList.toggle('on', b.dataset.weather===WEATHER));
+  const chip = document.getElementById('planChip');
+  const sub = document.getElementById('heroSub');
+  if(WEATHER==='sun'){
+    chip.textContent = '☀️ 晴れの日プラン';
+    sub.textContent = '海中クルージングと、もとぶのイルカたち。';
+  } else {
+    chip.textContent = '☔ 雨の日プラン';
+    sub.textContent = '水族館と琉球村、室内で楽しむ沖縄。';
+  }
+  renderDays();
+  renderMap();
+  renderRes();
+  observeNav();
+  updateProgress();
+  runSearch(searchInput.value); // re-apply current search filter to freshly rendered rows
+}
+document.getElementById('switcher').addEventListener('click', e=>{
+  const btn = e.target.closest('.sw-btn'); if(!btn) return;
+  WEATHER = btn.dataset.weather;
+  saveState();
+  applyWeather();
+});
+applyWeather();
+
+/* ════════ COMPARE VIEW ════════ */
+function cmpEvHTML(ev){
+  return `<div class="cmp-ev"><span class="ce-time">${ev.t}</span><span class="ce-text">${ev.txt}</span>${ev.note?`<span class="ce-note">${ev.note}</span>`:''}</div>`;
+}
+function renderCompare(){
+  const body = document.getElementById('cmpBody');
+  let html = '';
+  for(let i=0;i<5;i++){
+    const sd = SUN_DAYS[i], rd = RAIN_DAYS[i];
+    if(sd.shared){
+      html += `
+        <div class="cmp-day">
+          <div class="cmp-day-head">
+            <div class="cdh-num">Day ${sd.num} ・ ${sd.date}</div>
+            <h3>${sd.title}</h3>
+            <div class="cmp-shared-badge">◆ 晴れ・雨 共通プラン</div>
+          </div>
+        </div>`;
+      continue;
+    }
+    const sunEvs = sd.events.map(cmpEvHTML).join('');
+    const rainEvs = rd.events.map(cmpEvHTML).join('');
+    html += `
+      <div class="cmp-day">
+        <div class="cmp-day-head">
+          <div class="cdh-num">Day ${sd.num} ・ ${sd.date}</div>
+          <h3>晴れ「${sd.title}」　／　雨「${rd.title}」</h3>
+        </div>
+        <div class="cmp-cols">
+          <div class="cmp-col sun">
+            <div class="cmp-col-head">☀️ 晴れの日プラン</div>
+            ${sunEvs}
+          </div>
+          <div class="cmp-col rain">
+            <div class="cmp-col-head">☔ 雨の日プラン</div>
+            ${rainEvs}
+          </div>
+        </div>
+      </div>`;
+  }
+  body.innerHTML = html;
+}
+
+const cmpToggle = document.getElementById('cmpToggle');
+const compareView = document.getElementById('compareView');
+const itinerarySection = document.getElementById('itinerary');
+const switcherEl = document.getElementById('switcher');
+let compareMode = false;
+cmpToggle.addEventListener('click', ()=>{
+  compareMode = !compareMode;
+  cmpToggle.classList.toggle('on', compareMode);
+  const searchWrapEl = document.querySelector('.search-wrap');
+  if(compareMode){
+    renderCompare();
+    compareView.classList.add('show');
+    itinerarySection.style.display = 'none';
+    document.getElementById('noMatch').style.display = 'none';
+    switcherEl.style.opacity = '.4';
+    switcherEl.style.pointerEvents = 'none';
+    searchWrapEl.style.display = 'none';
+    cmpToggle.textContent = '⇄ 個別プランに戻る';
+  } else {
+    compareView.classList.remove('show');
+    itinerarySection.style.display = '';
+    switcherEl.style.opacity = '1';
+    switcherEl.style.pointerEvents = '';
+    searchWrapEl.style.display = '';
+    cmpToggle.textContent = '⇄ 比較表示';
+  }
+});
 </script>
 </body>
 </html>
